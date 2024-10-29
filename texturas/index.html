@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>atv5</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from "https://cdn.skypack.dev/three@0.136.0/build/three.module.js";
+      import { OrbitControls } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js";
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      const textureLoader = new THREE.TextureLoader();
+      const brownTexture = textureLoader.load("img/brown.jpg");
+      const cerebroTexture = textureLoader.load("img/cerebro.jpg");
+      const medievalTexture = textureLoader.load("img/medieval.jpg");
+
+      const browMaterial = new THREE.MeshLambertMaterial({ map: brownTexture });
+      const lambertMaterial = new THREE.MeshLambertMaterial({
+        map: medievalTexture,
+      });
+      const phongMaterial = new THREE.MeshPhongMaterial({
+        map: cerebroTexture,
+      });
+
+      const geometrySphere = new THREE.SphereGeometry(1, 32, 32);
+
+      const cube01 = new THREE.Mesh(geometrySphere, browMaterial);
+      const cube02 = new THREE.Mesh(geometrySphere, phongMaterial);
+      const cube03 = new THREE.Mesh(geometrySphere, lambertMaterial);
+
+      cube01.position.x = -5;
+      cube02.position.x = 0;
+      cube03.position.x = 5;
+
+      cube01.castShadow = true;
+      cube02.castShadow = true;
+      cube03.castShadow = true;
+
+      scene.add(cube01, cube02, cube03);
+
+      const light = new THREE.DirectionalLight(0xffffff, 0.5);
+      light.position.set(5, 10, 5);
+      scene.add(light);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+      scene.add(ambientLight);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      camera.position.z = 7;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        cube01.rotation.x += 0.01;
+        cube01.rotation.y += 0.01;
+        cube02.rotation.x += 0.01;
+        cube02.rotation.y += 0.01;
+        cube03.rotation.x += 0.01;
+        cube03.rotation.y += 0.01;
+        renderer.render(scene, camera);
+        controls.update();
+      }
+      animate();
+    </script>
+  </body>
+</html>
